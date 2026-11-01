@@ -1,0 +1,1767 @@
+/* Page look: black nav, gold hero, teal gallery, pastel callout and footer, navy CTA band. Colours, fonts and the
+   section styles live here; styles.css has the component layout. Loaded after styles.css so it wins ties. */
+
+:root {
+  --bg: #1a1228;
+  --panel: rgba(255, 255, 255, 0.07);
+  --line: rgba(255, 255, 255, 0.16);
+  --ink: #ffffff;
+  --muted: #b8aed0;
+  --gold: #f5c842;
+  --accent: #d9345f;
+  --mint: #a0eee8;
+  --pad-x: clamp(16px, 4.4vw, 64px);
+  --nav-h: 76px;
+  --display: 'Barlow Condensed', 'Arial Narrow', 'Roboto Condensed', Impact, sans-serif;
+  --text: 'Quicksand', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--text);
+  font-weight: 500;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+}
+
+.on-light {
+  color-scheme: light;
+}
+
+/* ---------- shared bits ---------- */
+
+.overline {
+  font: 700 11px/13px var(--text);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  height: 48px;
+  padding: 0 22px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font: 500 14px/17px var(--text);
+  white-space: nowrap;
+  transition: transform 0.15s, filter 0.15s, background 0.15s;
+}
+
+.action i {
+  font-style: normal;
+  font-size: 20px;
+  line-height: 24px;
+}
+
+.action:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
+.action:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.action-dark {
+  border-color: rgba(255, 255, 255, 0.19);
+  background: rgba(26, 8, 0, 0.84);
+  color: #fff;
+}
+
+.action-light {
+  border-color: rgba(58, 24, 0, 0.25);
+  background: #fff4d9;
+  color: #1a0800;
+}
+
+/* The "Your collection" buttons: one burgundy gradient whose opacity steps down from the first button (--t: 0) to
+   the last (--t: 1). The border and text are thick enough to stay readable on the faintest one. */
+.action-fade {
+  --a: calc(0.5 - var(--t) * 0.3); /* fill opacity: 0.5 down to 0.2; light enough for the dark text on every button */
+  border: 2px solid rgb(122 18 54 / calc(0.85 - var(--t) * 0.25));
+  background: linear-gradient(100deg, rgb(122 18 54 / var(--a)), rgb(217 52 95 / calc(var(--a) * 0.8)));
+  color: #1f000d;
+  font: 650 15px/18px var(--text);
+}
+
+.action-fade:disabled {
+  opacity: 0.6; /* still readable; the dashed border is what marks it as unavailable */
+  border-style: dashed;
+}
+
+.action-gold {
+  border-color: rgba(58, 24, 0, 0.19);
+  background: #f5c842;
+  color: #1a0800;
+}
+
+.action-rose {
+  border-color: rgba(192, 96, 128, 0.25);
+  background: #f6c9d6;
+  color: #2a0015;
+}
+
+.btn {
+  border-radius: 6px;
+}
+
+.btn.primary {
+  background: var(--gold);
+  color: #1a0800;
+}
+
+.btn.primary:hover:not(:disabled) {
+  background: #ffd75e;
+}
+
+.seg {
+  border-radius: 8px;
+}
+
+.seg button {
+  border-radius: 5px;
+}
+
+.banner {
+  width: calc(100% - 32px);
+  margin: 12px auto 0;
+}
+
+/* ---------- navigation ---------- */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  height: var(--nav-h);
+  padding: 0 var(--pad-x);
+  overflow: hidden;
+  isolation: isolate;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+  background: #000;
+}
+
+.nav::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.07) 0 2px, transparent 2px 6px);
+}
+
+.nav-ring {
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.nav-ring-1 {
+  top: -30px;
+  left: -20px;
+  width: 120px;
+  height: 120px;
+  border: 8px solid rgba(255, 255, 255, 0.2);
+}
+
+.nav-ring-2 {
+  top: -50px;
+  left: 40px;
+  width: 160px;
+  height: 160px;
+  border: 6px solid rgba(245, 200, 66, 0.32);
+}
+
+/* mirror of the pair above, anchored to the right end */
+.nav-ring-3 {
+  top: -30px;
+  right: -20px;
+  width: 120px;
+  height: 120px;
+  border: 8px solid rgba(255, 255, 255, 0.2);
+}
+
+.nav-ring-4 {
+  top: -50px;
+  right: 40px;
+  width: 160px;
+  height: 160px;
+  border: 6px solid rgba(245, 200, 66, 0.32);
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: none;
+  color: #fff;
+  text-decoration: none;
+}
+
+.nav-brand svg {
+  transition: transform 0.7s cubic-bezier(0.3, 0.7, 0.2, 1);
+}
+
+.nav-brand:hover svg {
+  transform: rotate(360deg);
+}
+
+.nav-wordmark {
+  font: 800 28px/1 var(--display);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.nav-wordmark b {
+  color: var(--gold);
+  font-weight: inherit;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex: 1;
+  align-self: stretch;
+}
+
+.nav-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #fff;
+  font: 600 14px/17px var(--text);
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+
+.nav-link:hover {
+  color: var(--gold);
+}
+
+.nav-link.is-active::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 -10px; /* sits below the text, clear of the letters' descenders */
+  height: 3px;
+  background: var(--gold);
+}
+
+/* ---------- hero ---------- */
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  --lift: 16px; /* how far the section's contents are pulled up; the section is that much shorter */
+  min-height: calc(506px - var(--lift));
+  padding: calc(36px - var(--lift)) var(--pad-x) 52px; /* the caption hangs below the cards, so the bottom needs the extra room */
+  overflow: hidden;
+  isolation: isolate;
+  background: #f7b23a url('./assets/bg-yellow.jpg') center / cover no-repeat;
+  color: #1a0800;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(184, 98, 0, 0.094);
+}
+
+.hero-ball {
+  position: absolute;
+  top: -180px;
+  left: 26%;
+  z-index: -1;
+  width: 700px;
+  height: 700px;
+  pointer-events: none;
+}
+
+.hero-ball i {
+  position: absolute;
+  display: block;
+}
+
+.hb-outer {
+  inset: 0;
+  border: 60px solid rgba(0, 0, 0, 0.094);
+  border-radius: 50%;
+}
+
+.hb-inner {
+  inset: 140px;
+  border: 4px solid rgba(0, 0, 0, 0.039);
+  border-radius: 50%;
+}
+
+.hb-band {
+  inset: 336px 0 auto;
+  height: 36px;
+  background: rgba(0, 0, 0, 0.063);
+}
+
+.hb-button {
+  top: 325px;
+  left: 320px;
+  width: 58px;
+  height: 58px;
+  border: 5px solid rgba(0, 0, 0, 0.063);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.031);
+}
+
+.hero-story {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  flex: 1 1 380px;
+  max-width: 630px;
+  min-width: 0;
+}
+
+.hero-identity {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.hero-mark {
+  flex: none;
+  width: 88px;
+  height: 88px;
+  filter: drop-shadow(0 6px 10px rgba(58, 24, 0, 0.35));
+}
+
+.hero-series {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #3a1800;
+  font: 700 13px/15px var(--text);
+  letter-spacing: 2px;
+}
+
+/* both lines share one style; <b> would otherwise ask for a heavier weight than the <span> above it */
+.hero-series span,
+.hero-series b {
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+}
+
+.hero-title {
+  margin: 0;
+  color: #1a0800;
+  font: 800 clamp(48px, 6vw, 76px) / 0.98 var(--display);
+  letter-spacing: -0.5px;
+  text-transform: uppercase;
+}
+
+.hero-desc {
+  max-width: 578px;
+  margin: 0;
+  color: #3a1800;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+}
+
+.hero-meta {
+  color: #4a2000;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.hero-feature {
+  position: relative;
+  flex: 1 1 380px;
+  align-self: center;
+  max-width: 646px;
+  aspect-ratio: 646 / 430;
+  margin-left: auto;
+}
+
+.hf-orbit,
+.hf-core,
+.hf-slash {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+}
+
+.hf-orbit {
+  border-radius: 50%;
+  transform: rotate(-15deg);
+}
+
+.hf-orbit-1 {
+  inset: 3% 3% 14% 3%;
+  border: 2px solid rgba(58, 24, 0, 0.25);
+}
+
+.hf-orbit-2 {
+  inset: 11% 8% 21% 8%;
+  border: 1px solid rgba(58, 24, 0, 0.18);
+}
+
+.hf-core {
+  inset: 10% 17% 14%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 244, 200, 0.55), rgba(255, 208, 96, 0.12) 65%, transparent 72%);
+}
+
+.hf-slash {
+  top: 24%;
+  left: 1.5%;
+  width: 90%;
+  height: 6.5%;
+  background: rgba(255, 232, 150, 0.72);
+  transform: rotate(-25deg);
+}
+
+.hero-card {
+  position: absolute;
+  width: 36.2%;
+  aspect-ratio: 63 / 88;
+  border-radius: 5% / 3.6%;
+  filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.4));
+}
+
+.hero-card.is-a {
+  top: 7.6%;
+  left: 5.9%;
+  transform: rotate(-10deg);
+}
+
+.hero-card.is-b {
+  top: 8.4%;
+  left: 39.6%;
+  transform: rotate(10deg);
+}
+
+.hero-card[role='button'] {
+  cursor: pointer;
+}
+
+.hero-card .tilt,
+.hero-card .tilt-inner {
+  border-radius: inherit;
+}
+
+.hero-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+  user-select: none;
+}
+
+.cardback {
+  width: 100%;
+  height: 100%;
+  padding: 4.5%;
+  border-radius: inherit;
+  background: linear-gradient(145deg, #ffd24d, #e0902a);
+}
+
+.cardback-in {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 7% / 5%;
+  background: radial-gradient(circle at 50% 50%, #5b8dff 0, #2b50b9 55%, #17307c 100%);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+.cardback-in svg {
+  width: 46%;
+  height: auto;
+  aspect-ratio: 1;
+}
+
+.spotlight {
+  position: absolute;
+  top: calc(100% - 5px); /* hangs just under the cards' box, with the note below its first line */
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* both lines share one left edge, so their bullets line up like a list */
+  gap: 8px;
+  width: max-content;
+  max-width: 100%;
+  color: #3a1800;
+  font: 700 13px/15px var(--text);
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+}
+
+/* Side-by-side layout (901px and up): centred under the middle of the two cards, then moved right by --shift. The
+   cards span 1.8%-79.9% of their box, so their middle is at 40.85%, not 50%. --shift: 0 is straight under that
+   middle; 50px sits a little to the right of it. Below 901px the layout stacks and the caption stays centred. */
+@media (min-width: 901px) {
+  .spotlight {
+    --shift: 50px;
+    left: calc(40.85% + var(--shift));
+  }
+}
+
+.spot-line,
+.spot-note {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  white-space: nowrap; /* neither line wraps by itself; the note is split into two fixed lines below 1400px */
+}
+
+.spot-line {
+  align-items: center;
+}
+
+/* if the note is on two lines, its bullet stays level with the first one */
+.spot-note {
+  align-items: flex-start;
+}
+
+.spot-note i {
+  margin-top: 4.5px; /* (15px line - 6px bullet) / 2 */
+}
+
+@media (max-width: 1399px) {
+  .spot-note .note-b {
+    display: block;
+  }
+}
+
+.spotlight i {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  background: #3a1800;
+}
+
+/* ---------- gallery (binder + grid) ---------- */
+
+.gallery-sec {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 38px var(--pad-x) 56px;
+  overflow: hidden;
+  isolation: isolate;
+  border-top: 1px solid rgba(255, 255, 255, 0.125);
+  /* A fixed width, repeated downward: `cover` rescaled the image to the section's height, so it zoomed in the
+     taller gallery view. The tile is the picture plus its mirror image, so each repeat joins without a seam. */
+  background: #6fd0d2 url('./assets/bg-teal-tile.jpg') center top / max(100%, 2200px) auto repeat-y;
+  color: #001e26;
+  scroll-margin-top: var(--nav-h);
+}
+
+.gallery-sec::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(0, 67, 80, 0.125);
+}
+
+.g-ring {
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.g-ring-1 {
+  top: 60px;
+  left: -200px;
+  width: 900px;
+  height: 900px;
+  border: 90px solid rgba(255, 255, 255, 0.17);
+}
+
+.g-ring-2 {
+  top: 110px;
+  left: -150px;
+  width: 800px;
+  height: 800px;
+  border: 5px solid rgba(255, 255, 255, 0.26);
+}
+
+.g-ring-3 {
+  top: 400px;
+  right: -300px;
+  width: 700px;
+  height: 700px;
+  border: 70px solid rgba(255, 255, 255, 0.14);
+}
+
+/* bottom-right corner, mirroring the thick + thin pair at the top left; anchored to the bottom so they stay in the
+   corner however tall the section gets */
+.g-ring-4 {
+  right: -220px;
+  bottom: -330px;
+  width: 760px;
+  height: 760px;
+  border: 80px solid rgba(255, 255, 255, 0.17);
+}
+
+.g-ring-5 {
+  right: -150px;
+  bottom: -260px;
+  width: 640px;
+  height: 640px;
+  border: 5px solid rgba(255, 255, 255, 0.26);
+}
+
+.g-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start; /* the tips box starts on the same line as the "BINDER VIEW" label */
+  justify-content: space-between;
+  gap: 12px 24px;
+}
+
+.g-title {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+.g-title .overline {
+  padding-left: 3px;
+  color: #00141a;
+  font-size: 14px;
+}
+
+/* where the My Binder / Card Gallery links scroll to: the label sits just under the sticky header, as in the
+   reference screenshot (the header's height follows --nav-h at every screen size) */
+#gallery-top {
+  scroll-margin-top: calc(var(--nav-h) + 2px);
+}
+
+/* "Binder view" label with the edit pencil beside it. The pencil is taller than the label's text, so it is pulled up
+   and down by its own extra height (negative margins) and the row stays exactly as tall as the text alone. */
+.g-label-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 13px;
+}
+
+.title-btn.pencil {
+  width: 24px;
+  height: 24px;
+  margin: -6px 0;
+  border-radius: 5px;
+}
+
+.title-btn.pencil svg {
+  stroke-width: 2;
+}
+
+/* The title: a heading on an always-visible underline. In edit mode the save and cancel buttons sit at the right end
+   of the same line. */
+.g-title-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  width: min(100%, 620px);
+  padding-bottom: 2px;
+  border-bottom: 2px solid rgba(0, 30, 38, 0.35); /* always shown */
+}
+
+.g-title-text,
+.g-title-input {
+  margin: 0;
+  color: #001e26;
+  font: 700 clamp(36px, 5vw, 52px) / 1.05 var(--display);
+  text-transform: uppercase;
+}
+
+.g-title-text {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.g-title-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  width: 100%;
+}
+
+.g-title-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  outline: none;
+}
+
+.title-btn {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 4px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.32);
+  color: #1b6672;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.title-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.title-btn.primary {
+  background: #fff3d6;
+  color: #7a4a1c;
+}
+
+.title-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.title-btn svg {
+  stroke-width: 1.9;
+}
+
+/* same quick tooltip as the view icons */
+.title-btn::after {
+  content: attr(data-tip);
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  z-index: 20;
+  padding: 6px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  background: rgba(0, 62, 74, 0.62);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font: 600 12px/14px var(--text);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, -4px);
+  pointer-events: none;
+  transition: opacity 0.1s ease, transform 0.1s ease;
+}
+
+.title-btn:hover::after,
+.title-btn:focus-visible::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  transition-delay: 0.04s;
+}
+
+/* the pencil sits at the left of the page, so its tip starts at the pencil instead of centring on it */
+.title-btn.pencil::after {
+  left: 0;
+  transform: translate(0, -4px);
+}
+
+.title-btn.pencil:hover::after,
+.title-btn.pencil:focus-visible::after {
+  transform: none;
+}
+
+.g-guide {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 430px;
+  margin: 0;
+  padding: 14px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.28);
+  color: #00222b;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+  list-style: none;
+  text-align: left;
+}
+
+.g-guide li {
+  position: relative;
+  padding-left: 18px;
+}
+
+.g-guide li::before {
+  content: '';
+  position: absolute;
+  top: 0.45em;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #0a6b71;
+}
+
+.cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.19);
+}
+
+.cat {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  height: 44px;
+  padding: 0 24px;
+  border: 1px solid rgba(192, 96, 128, 0.25);
+  border-radius: 6px;
+  background: linear-gradient(#fadbe5, #f3c3d3);
+  color: #5c1030;
+  font: 600 13px/16px var(--text);
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.15s, box-shadow 0.18s;
+}
+
+.cat:hover {
+  transform: translateY(-2px) scale(1.015);
+  filter: brightness(1.05);
+  box-shadow: 0 6px 12px -8px rgba(60, 10, 40, 0.4);
+}
+
+.cat[aria-pressed='true'] {
+  border-color: rgba(58, 24, 0, 0.25);
+  background: #fff3d6;
+  color: #1a0800;
+}
+
+.cat[aria-pressed='true']::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 100px;
+  background: #3a1800;
+}
+
+.g-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 22px;
+}
+
+.g-search,
+.g-sort {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.32);
+  color: #00141a;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.g-search {
+  flex: 0 1 370px;
+  gap: 12px;
+  padding: 0 15px;
+}
+
+.g-search:focus-within,
+.g-sort:focus-within {
+  border-color: #003a45;
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.g-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: #00252e;
+  font: 600 15px/18px var(--text);
+  outline: none;
+}
+
+.g-search input::placeholder {
+  color: #00424f;
+  opacity: 1;
+}
+
+.g-view {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 22px;
+}
+
+.g-count {
+  color: #00303b;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+.g-sort {
+  gap: 20px;
+  padding: 0 16px;
+  color: #00303b; /* the shared box rule above sets the colour too; this one is the sort box's own */
+}
+
+.g-sort select {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: 600 14px/17px var(--text);
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.g-sort select option {
+  color: #001e26;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 8px;
+}
+
+/* Quick tooltip. The browser's own `title` tooltip waits about a second and can't be sped up. It hangs off the
+   button's right edge so it can't be clipped by the section. */
+.view-toggle button::after {
+  content: attr(data-tip);
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  padding: 6px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  background: rgba(0, 62, 74, 0.62);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font: 600 12px/14px var(--text);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity 0.1s ease, transform 0.1s ease;
+}
+
+.view-toggle button:hover::after,
+.view-toggle button:focus-visible::after {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.04s;
+}
+
+.view-toggle button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.32);
+  color: #1b6672;
+  transition: background 0.15s;
+}
+
+.view-toggle svg {
+  stroke-width: 1.75;
+}
+
+.view-toggle button[aria-pressed='true'] {
+  background: #fff3d6;
+  color: #7a4a1c;
+}
+
+.view-toggle button:hover:not([aria-pressed='true']) {
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.g-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+}
+
+/* the shared controls were styled for the dark page: re-skin them on the teal band */
+.gallery-sec .hint {
+  border-color: rgba(0, 58, 69, 0.4);
+  color: #003a45;
+}
+
+.gallery-sec .btn {
+  border-color: rgba(0, 58, 69, 0.3);
+  background: rgba(255, 255, 255, 0.55);
+  color: #001e26;
+}
+
+.gallery-sec .btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.gallery-sec .seg {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.32);
+}
+
+.gallery-sec .seg button {
+  color: #00303b;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.gallery-sec .seg button[aria-pressed='true'] {
+  background: #fff3d6;
+  color: #1a0800;
+}
+
+.pocket.is-dim {
+  opacity: 0.22;
+  filter: grayscale(1);
+  transition: opacity 0.2s;
+}
+
+.pocket.is-dim:hover {
+  opacity: 0.6;
+}
+
+/* flat gallery view */
+.gc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  gap: 36px 28px;
+  width: 100%;
+}
+
+.gc {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: fade-up 0.5s ease both;
+  animation-delay: calc(var(--i) * 45ms);
+}
+
+.gc-display {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.5); /* a clear frame so the transparent box still reads as a box */
+  border-radius: 12px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.12));
+  cursor: pointer;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.gc-display:hover,
+.gc-display:focus-visible {
+  box-shadow: 0 20px 36px -16px rgba(0, 30, 38, 0.6);
+  transform: translateY(-4px);
+}
+
+.gc-art {
+  width: 100%;
+  aspect-ratio: 63 / 88;
+}
+
+.gc-art .tilt {
+  border-radius: 6px;
+}
+
+.gc-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  object-fit: cover;
+  user-select: none;
+}
+
+.gc.is-wish .gc-art img {
+  filter: saturate(0.6) brightness(0.95);
+}
+
+.gc-display .pocket-badge {
+  inset: 22px auto auto 22px;
+}
+
+.gc-details {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 0 2px;
+}
+
+.gc-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* Card names use a comic-book title face. It only ships one weight, so the punch comes from size, caps, spacing and
+   a light offset shadow instead of font-weight. */
+.gc-name {
+  min-width: 0;
+  overflow: hidden;
+  padding: 2px 4px 2px 0; /* room so the slanted letters and their shadow are not clipped by overflow */
+  color: #00141a;
+  font: 400 24px/26px 'Bangers', 'Impact', 'Arial Narrow', sans-serif;
+  letter-spacing: 0.04em;
+  text-overflow: ellipsis;
+  text-shadow: 2px 2px 0 rgba(255, 255, 255, 0.65);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.gc-num {
+  color: #00141a;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.gc-cat,
+.gc-enlarge {
+  color: #00252e;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 15px;
+}
+
+.gc-enlarge {
+  font-size: 16px;
+  line-height: 19px;
+}
+
+.g-empty {
+  padding: 40px 12px;
+  color: #003a45;
+  text-align: center;
+}
+
+.g-empty p {
+  margin: 0 0 14px;
+  font-size: 15px;
+}
+
+.g-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* ---------- manage callout ---------- */
+
+.callout-sec {
+  position: relative;
+  padding: 56px var(--pad-x);
+  overflow: hidden;
+  isolation: isolate;
+  background: #bff3e6;
+}
+
+/* the image sits on its own layer so it can be turned upside down without touching the content */
+.callout-sec::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: url('./assets/bg-pastel.jpg') center / cover no-repeat;
+  transform: rotate(180deg);
+  pointer-events: none;
+}
+
+.spark {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background:
+    linear-gradient(rgba(92, 40, 0, 0.125), rgba(92, 40, 0, 0.125)) center / 3px 100% no-repeat,
+    linear-gradient(rgba(92, 40, 0, 0.125), rgba(92, 40, 0, 0.125)) center / 100% 3px no-repeat;
+  pointer-events: none;
+}
+
+.spark::before,
+.spark::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(92, 40, 0, 0.094), rgba(92, 40, 0, 0.094)) center / 3px 100% no-repeat;
+}
+
+.spark::before {
+  transform: rotate(45deg);
+}
+
+.spark::after {
+  transform: rotate(-45deg);
+}
+
+.spark-sm {
+  width: 34px;
+  height: 34px;
+}
+
+.callout {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 44px;
+  max-width: 1312px;
+  margin: 0 auto;
+  padding: 36px;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(192, 96, 128, 0.19);
+  border-radius: 12px;
+  background: #f0b1c5 url('./assets/bg-pink.jpg') center / cover no-repeat;
+  color: #5c1030;
+}
+
+.callout::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(128, 0, 16, 0.08);
+}
+
+.callout-line {
+  position: absolute;
+  left: -40px;
+  z-index: -1;
+  width: 400px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.4);
+  transform: rotate(-15deg);
+  pointer-events: none;
+}
+
+.cl-1 {
+  top: 24%;
+}
+
+.cl-2 {
+  top: 42%;
+  opacity: 0.55;
+}
+
+.callout-visual {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 240px;
+  height: 220px;
+}
+
+.callout-visual .halo {
+  position: absolute;
+  width: 210px;
+  height: 210px;
+  border: 1px solid #5c2800;
+  border-radius: 50%;
+  background: #d48030;
+}
+
+.callout-visual svg {
+  position: relative;
+  filter: drop-shadow(0 10px 14px rgba(58, 24, 0, 0.4));
+}
+
+.callout-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.callout-copy .overline {
+  color: #5c1030;
+}
+
+.callout-copy h2 {
+  margin: 0;
+  color: #2a0015;
+  font: 700 clamp(32px, 4vw, 44px) / 1 var(--display);
+  text-transform: uppercase;
+}
+
+.callout-copy p {
+  max-width: 490px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.meter {
+  max-width: 490px;
+  height: 10px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: rgba(92, 16, 48, 0.18);
+}
+
+.meter i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #7a1236, #d9345f);
+  transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.callout-actions {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  gap: 10px;
+  width: 230px;
+}
+
+.callout-actions small {
+  color: #4a0620;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  text-align: center;
+}
+
+/* ---------- call to action band ---------- */
+
+.cta {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 40px var(--pad-x);
+  overflow: hidden;
+  isolation: isolate;
+  background: #0b2a6b url('./assets/bg-navy.jpg') center / cover no-repeat;
+}
+
+.cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(0, 0, 0, 0.157);
+}
+
+.cta-ball {
+  position: absolute;
+  top: -220px;
+  left: 20%;
+  z-index: -1;
+  width: 660px;
+  height: 660px;
+  pointer-events: none;
+}
+
+.cb-ring {
+  position: absolute;
+  inset: 0;
+  border: 66px solid rgba(255, 255, 255, 0.031);
+  border-radius: 50%;
+}
+
+.cb-band {
+  position: absolute;
+  inset: 322px 0 auto;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.024);
+}
+
+.cta-slash {
+  position: absolute;
+  z-index: -1;
+  background: rgba(255, 255, 255, 0.078);
+  transform: rotate(-20deg);
+  pointer-events: none;
+}
+
+.cs-1 {
+  top: 10%;
+  left: -80px;
+  width: 500px;
+  height: 4px;
+}
+
+.cs-2 {
+  top: 24%;
+  left: -60px;
+  width: 500px;
+  height: 3px;
+  opacity: 0.5;
+}
+
+.cta-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 750px;
+}
+
+.cta-copy .overline {
+  color: var(--mint);
+  font-weight: 600;
+}
+
+.cta-copy h2 {
+  margin: 0;
+  color: #fff;
+  font: 800 clamp(34px, 4.4vw, 56px) / 1 var(--display);
+  text-transform: uppercase;
+}
+
+.cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 6px;
+}
+
+.cta-art {
+  flex: none;
+  width: 150px;
+  height: 150px;
+  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.4));
+}
+
+/* ---------- footer ---------- */
+
+.footer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 28px var(--pad-x);
+  overflow: hidden;
+  isolation: isolate;
+  background: #bff3e6 url('./assets/bg-pastel.jpg') center / cover no-repeat;
+  color: #1a1030; /* the pastel image is light, so the footer text goes dark */
+}
+
+.footer-ring {
+  position: absolute;
+  top: -30px;
+  left: -30px;
+  z-index: -1;
+  width: 100px;
+  height: 100px;
+  border: 5px solid rgba(26, 16, 48, 0.08);
+  border-radius: 50%;
+}
+
+.footer-shimmer {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(26, 16, 48, 0.2) 30%, rgba(26, 16, 48, 0.2) 70%, transparent);
+}
+
+.footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 24px;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  font-size: 14px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 26px;
+}
+
+.footer-links a,
+.to-top {
+  color: #064a52;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.footer-links a:hover,
+.to-top:hover {
+  text-decoration: underline;
+}
+
+.to-top {
+  font-weight: 600;
+}
+
+.footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(26, 16, 48, 0.18);
+  color: #1a1030;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.footer-legal span:first-child {
+  max-width: 720px;
+}
+
+.footer-credit {
+  align-self: flex-end; /* sits at the bottom-right of the row, level with the last line of the legal text */
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+/* ---------- search drawer, matched to the site ---------- */
+
+.search {
+  border-left-color: rgba(255, 255, 255, 0.14);
+  /* the dark layer keeps the inputs and card thumbnails readable over the image */
+  background:
+    linear-gradient(rgba(6, 8, 30, 0.55), rgba(6, 8, 30, 0.55)),
+    #0a0f3a url('./assets/bg-night.jpg') center / cover no-repeat;
+}
+
+.search-head h2 {
+  font: 800 28px/1 var(--display);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.search-input,
+.chip {
+  border-radius: 6px;
+}
+
+.rc-art {
+  border-radius: 6px;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 900px) {
+  /* two rows (logo + swatches, then the links): 6 + 34 + 40 + 6 + 1px border. Keep --nav-h equal to that so
+     the jump to the gallery stops right under the header. */
+  :root {
+    --nav-h: 87px;
+  }
+
+  .nav {
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 64px;
+    gap: 0 16px;
+    padding-block: 6px;
+  }
+
+  .nav-links {
+    order: 3;
+    flex: 1 0 100%;
+    gap: 22px;
+    height: 40px; /* the active underline hangs 10px below the text and this row clips what overflows it */
+    margin: 0 -4px;
+    padding: 0 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .nav-brand svg {
+    width: 34px;
+    height: 34px;
+  }
+
+  .nav-wordmark {
+    font-size: 24px;
+  }
+
+  .nav-brand {
+    margin-right: auto;
+  }
+
+  .hero {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 28px;
+    --lift: 10px; /* smaller than on wide screens: there is only 28px of padding to take from */
+    padding-block: calc(28px - var(--lift)) 76px; /* room under the cards for the caption and its two-line note */
+  }
+
+  .hero-story {
+    flex-basis: auto;
+    max-width: none;
+  }
+
+  .hero-feature {
+    flex: none;
+    width: min(100%, 520px);
+    margin: 0 auto;
+  }
+
+  .g-guide {
+    width: 100%;
+    max-width: none;
+  }
+
+  .callout {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 24px;
+    padding: 28px 22px;
+  }
+
+  .callout-visual {
+    align-self: center;
+    width: 200px;
+    height: 180px;
+  }
+
+  .callout-visual .halo {
+    width: 170px;
+    height: 170px;
+  }
+
+  .callout-actions {
+    width: 100%;
+  }
+
+  .cta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cta-art {
+    display: none;
+  }
+
+  .footer-legal {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 400px) {
+  .nav-links {
+    gap: 16px; /* all four links fit without scrolling sideways at 360px */
+  }
+}
+
+@media (max-width: 380px) {
+  /* keep the logo and the color swatches on one row; otherwise the header grows a third row */
+  :root {
+    --nav-h: 83px; /* the smaller logo shortens the top row by 4px */
+  }
+
+  .nav-brand {
+    gap: 8px;
+  }
+
+  .nav-brand svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .nav-wordmark {
+    font-size: 20px;
+  }
+
+  .swatches {
+    gap: 2px;
+    padding: 4px;
+  }
+
+  .swatch {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 520px) {
+  .hero-identity {
+    gap: 16px;
+  }
+
+  .hero-mark {
+    width: 64px;
+    height: 64px;
+  }
+
+  .nav-link {
+    font-size: 13px;
+  }
+
+  .view-toggle button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .action {
+    gap: 16px;
+    padding: 0 16px;
+  }
+}
+
+/* ---------- search drawer (wide screens) ---------- */
+
+@media (min-width: 1000px) {
+  /* the drawer slides over the page, under the nav, so the nav and its Find Cards toggle stay reachable */
+  .search {
+    top: var(--nav-h);
+  }
+}
